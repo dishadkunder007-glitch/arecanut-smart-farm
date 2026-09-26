@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<html lang="kn">
+
+<head>
+  <link rel="manifest" href="./manifest.json">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Arecanut Smart Irrigation & AI Farm Management</title>
+  <meta name="description"
+    content="Precision IoT Smart Irrigation & AI Disease Detection Platform for Arecanut Farmers in Karnataka">
+  <meta name="theme-color" content="#064e3b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <!-- Modern Typography (Surely Companion App Style) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- Chart.js for High-Resolution Agricultural Graphs -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/styles.css?v=36">
+  <link rel="stylesheet" href="css/oled.css?v=36">
+  <link rel="stylesheet" href="css/responsive.css?v=36">
+</head>
+
+<body class="light-theme">
+  <script>
+    try {
+      if (localStorage.getItem("areca_companion_theme") !== "dark") {
+        localStorage.removeItem("areca_theme");
+        document.body.classList.remove("dark-theme");
+        document.body.classList.add("light-theme");
+      }
+    } catch (e) { }
+  </script>
+
+  <!-- Floating Semi-Transparent Application Container Sitting Over Nature Background -->
+  <div class="app-floating-container">
+
+    <!-- Main Application Header -->
+    <header class="app-header">
+      <div class="brand-wrapper">
+        <!-- Hamburger Menu Button (Mobile & Tablet) -->
+        <button id="hamburgerBtn" class="btn-hamburger" aria-label="Toggle navigation menu" title="Menu">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+        <div class="brand-logo-icon">🌴</div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Language Switcher (Section 11) -->
+        <button id="langToggleBtn" class="btn-lang-toggle" title="Switch Language (ಕನ್ನಡ / English)">
+          ಕನ್ನಡ
+        </button>
+
+        <!-- User Profile & Role Display -->
+        <div id="userProfileBadge" class="user-profile-badge" style="display: none;">
+          <div class="user-avatar" id="userAvatarLetter">F</div>
+          <span id="userNameDisplay">Farmer</span>
+          <span id="userRoleTag"
+            style="font-size: 0.7rem; background: var(--primary-700); padding: 2px 6px; border-radius: 4px; color: #fff;">FARMER</span>
+          <button id="btnLogout" class="btn-logout" title="Logout">🚪</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Mobile Hamburger Slide-Out Navigation Drawer -->
+    <div class="mobile-nav-backdrop" id="mobileNavBackdrop"></div>
+    <aside class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile Navigation">
+      <div class="mobile-drawer-header">
+        <div class="mobile-drawer-header-left">
+          <div class="brand-logo-icon">🌴</div>
+          <button class="drawer-header-btn" id="btnDrawerSettings" aria-label="Settings" title="Settings">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path
+                d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z">
+              </path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </button>
+          <button class="drawer-header-btn" id="btnDrawerAbout" aria-label="About" title="About">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+          </button>
+        </div>
+        <button class="btn-icon" id="btnCloseMobileNav" aria-label="Close menu"
+          style="width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <nav class="mobile-drawer-links">
+        <a class="nav-link mobile-drawer-link active" data-target="view-home">
+          <span class="nav-icon">🏡</span>
+          <span data-i18n="nav_home">Home</span>
+        </a>
+        <a class="nav-link mobile-drawer-link" data-target="view-irrigation">
+          <span class="nav-icon">💧</span>
+          <span data-i18n="nav_irrigation">Irrigation</span>
+        </a>
+        <a class="nav-link mobile-drawer-link" data-target="view-health">
+          <span class="nav-icon">🌱</span>
+          <span data-i18n="nav_health">Farm Health</span>
+        </a>
+        <a class="nav-link mobile-drawer-link" data-target="view-history">
+          <span class="nav-icon">📈</span>
+          <span data-i18n="nav_history">History</span>
+        </a>
+        <a class="nav-link mobile-drawer-link admin-only" data-target="view-oled" style="display: none;">
+          <span class="nav-icon">📡</span>
+          <span data-i18n="nav_oled">IoT Monitoring</span>
+        </a>
+        <a class="nav-link mobile-drawer-link admin-only" data-target="view-admin" style="display: none;">
+          <span class="nav-icon">🛡️</span>
+          <span data-i18n="nav_admin">Admin</span>
+        </a>
+      </nav>
+
+      <div class="mobile-drawer-footer">
+        <div class="drawer-user-card" id="drawerUserCard">
+          <div class="user-avatar" id="drawerAvatarLetter">F</div>
+          <div style="flex: 1; min-width: 0;">
+            <div id="drawerUserName"
+              style="font-weight: 700; font-size: 0.88rem; color: var(--text-bright); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+              Farmer</div>
+            <span id="drawerUserRoleTag"
+              style="font-size: 0.68rem; background: var(--forest-700); padding: 2px 6px; border-radius: 4px; color: #fff;">FARMER</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- App Layout Container -->
+    <div class="app-layout">
+
+      <!-- Desktop Sidebar Navigation -->
+      <nav class="desktop-nav">
+        <a class="nav-link active" data-target="view-home">
+          <span class="nav-icon">🏡</span>
+          <span data-i18n="nav_home">Home</span>
+        </a>
+        <a class="nav-link" data-target="view-irrigation">
+          <span class="nav-icon">💧</span>
+          <span data-i18n="nav_irrigation">Irrigation</span>
+        </a>
+        <a class="nav-link" data-target="view-health">
+          <span class="nav-icon">🌱</span>
+          <span data-i18n="nav_health">Farm Health</span>
+        </a>
+        <a class="nav-link" data-target="view-history">
+          <span class="nav-icon">📈</span>
+          <span data-i18n="nav_history">History</span>
+        </a>
+        <a class="nav-link admin-only" data-target="view-oled" style="display: none;">
+          <span class="nav-icon">📡</span>
+          <span data-i18n="nav_oled">IoT Monitoring</span>
+        </a>
+        <a class="nav-link admin-only" data-target="view-admin" style="display: none;">
+          <span class="nav-icon">🛡️</span>
+          <span data-i18n="nav_admin">Admin</span>
+        </a>
+        <div class="desktop-nav-footer">
+          <button class="drawer-header-btn" id="btnDesktopSettings" aria-label="Settings" title="Settings">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path
+                d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z">
+              </path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </button>
+          <button class="drawer-header-btn" id="btnDesktopAbout" aria-label="About" title="About">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+          </button>
+        </div>
+      </nav>
+
+      <!-- Mobile Bottom Navigation (Farmer Touch Ergonomics) -->
+      <nav class="mobile-bottom-nav">
+        <a class="mobile-nav-item active" data-target="view-home">
+          <span class="nav-icon">🏡</span>
+          <span data-i18n="nav_home">Home</span>
+        </a>
+        <a class="mobile-nav-item" data-target="view-irrigation">
+          <span class="nav-icon">💧</span>
+          <span data-i18n="nav_irrigation">Water</span>
+        </a>
+        <a class="mobile-nav-item" data-target="view-health">
+          <span class="nav-icon">🌱</span>
+          <span data-i18n="nav_health">Health</span>
+        </a>
+        <a class="mobile-nav-item" data-target="view-history">
+          <span class="nav-icon">📈</span>
+          <span data-i18n="nav_history">Trends</span>
+        </a>
+        <a class="mobile-nav-item admin-only" data-target="view-oled" style="display: none;">
+          <span class="nav-icon">📡</span>
+          <span data-i18n="nav_oled_mobile">IoT Monitor</span>
+        </a>
+        <a class="mobile-nav-item admin-only" data-target="view-admin" style="display: none;">
+          <span class="nav-icon">🛡️</span>
+          <span data-i18n="nav_admin">Admin</span>
+        </a>
+      </nav>
+
+      <!-- Main Content Area -->
+      <main class="main-content">
+
+        <!-- ==========================================
+           1. VIEW: HOME / OVERVIEW (Section 2 & 3)
+           ========================================== -->
+        <section id="view-home" class="view-section active">
+
+          <!-- Modern Companion Welcome Hero Area -->
+          <div class="farmer-greeting-card">
+            <div class="greeting-text-area">
+              <div class="greeting-eyebrow">
+                <span class="greeting-icon">🌴</span>
+                <span data-i18n="companion_tag">Smart Farming Companion</span>
+              </div>
+              <h2 class="greeting-title">
+                <span id="greetingTimeSalutation">Good day</span>, <span id="farmerGreetingName">Shivraj</span> 👋
+              </h2>
+            </div>
+            <div class="greeting-status-pill" id="homeCompanionStatusPill">
+              <span class="companion-pulse-dot"></span>
+              <span id="homeCompanionStatusText">All systems operating normally</span>
+            </div>
+          </div>
+
+          <!-- Unified Real-Time Farm Telemetry (Section 3) -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">
+                <span>📡</span> <span data-i18n="monitoring_title">Real-Time Farm Telemetry</span>
+              </h3>
+              <span class="live-stream-pill" data-i18n="live_stream_badge">● LIVE IoT STREAM</span>
+            </div>
+            <div class="telemetry-grid" id="sensorsGrid">
+              <!-- 1. Soil Moisture (Water System) -->
+              <div class="sensor-card">
+                <div class="sensor-card-top">
+                  <span class="sensor-name" id="cardMoistureTitle">💧 <span data-i18n="soil_moisture">Soil
+                      Moisture</span></span>
+                  <span class="sensor-badge sensor-badge-online" id="cardMoistureBadge">Optimal</span>
+                </div>
+                <div class="sensor-value-large">
+                  <span id="cardMoistureVal">56.4</span>
+                  <span class="sensor-unit">%</span>
+                </div>
+                <div class="sensor-progress-bar">
+                  <div class="sensor-progress-fill" id="cardMoistureFill" style="width: 56.4%;"></div>
+                </div>
+                <div class="sensor-meta-row">
+                  <span id="cardMoistureTarget"><span data-i18n="target_range">Target Range</span>: 50 - 72%</span>
+                  <span id="cardMoistureTime">● <span data-i18n="online">Online</span></span>
+                </div>
+              </div>
+
+              <!-- 3. Soil pH Level (Soil Health System) -->
+              <div class="sensor-card">
+                <div class="sensor-card-top">
+                  <span class="sensor-name" id="cardPhTitle">🧪 <span data-i18n="soil_ph">Soil pH Level</span></span>
+                  <span class="sensor-badge sensor-badge-online" id="cardPhBadge">Ideal</span>
+                </div>
+                <div class="sensor-value-large">
+                  <span id="cardPhVal">6.20</span>
+                  <span class="sensor-unit">pH</span>
+                </div>
+                <div class="sensor-progress-bar">
+                  <div class="sensor-progress-fill" id="cardPhFill" style="width: 44.3%; background: #d97706;"></div>
+                </div>
+                <div class="sensor-meta-row">
+                  <span id="cardPhTarget"><span data-i18n="target_range">Target Range</span>: 5.8 - 6.8 pH</span>
+                  <span id="cardPhOnline">● <span data-i18n="online">Online</span></span>
+                </div>
+              </div>
+
+              <!-- 4. Soil NPK Nutrients (Soil Health System) -->
+              <div class="sensor-card">
+                <div class="sensor-card-top">
+                  <span class="sensor-name" id="cardNpkTitle">🌱 N-P-K <span
+                      data-i18n="nutrients">Nutrients</span></span>
+                  <span class="sensor-badge sensor-badge-online" id="cardNpkBadge">Analyzed</span>
+                </div>
+                <div class="npk-grid">
+                  <div class="npk-column">
+                    <div class="npk-letter">N</div>
+                    <div class="npk-val" id="cardValN">210</div>
+                    <div class="npk-status-tag npk-adequate" id="cardTagN">Good</div>
+                  </div>
+                  <div class="npk-column">
+                    <div class="npk-letter">P</div>
+                    <div class="npk-val" id="cardValP">38</div>
+                    <div class="npk-status-tag npk-adequate" id="cardTagP">Good</div>
+                  </div>
+                  <div class="npk-column">
+                    <div class="npk-letter">K</div>
+                    <div class="npk-val" id="cardValK">185</div>
+                    <div class="npk-status-tag npk-adequate" id="cardTagK">Good</div>
+                  </div>
+                </div>
+                <div class="sensor-meta-row">
+                  <span id="cardNpkUnit">Unit: mg/kg dry soil</span>
+                  <span id="cardNpkOnline">● <span data-i18n="online">Online</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ==========================================
+           2. VIEW: SMART IRRIGATION (Section 4 & 5)
+           ========================================== -->
+        <section id="view-irrigation" class="view-section">
+
+          <!-- Safety Emergency Banner (Hidden until tripped) (Section 5) -->
+          <div id="dryRunWarningBanner" class="dry-run-banner" style="display: none;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span style="font-size: 2rem;">🚨</span>
+              <div>
+                <strong data-i18n="dry_run_alert" style="font-size: 1.05rem;">EMERGENCY: Pump Dry-Run Protection
+                  Tripped!</strong>
+                <div style="font-size: 0.85rem; opacity: 0.9;" data-i18n="dry_run_sub">Flow rate dropped to 0 L/min
+                  while pump was energized. Pump automatically locked out.</div>
+              </div>
+            </div>
+            <button id="btnResetDryRunLockout" class="btn-reset-dryrun" data-i18n="btn_reset_dryrun">
+              RESET DRY-RUN LOCKOUT
+            </button>
+          </div>
+
+          <!-- Smart Irrigation Decision Engine Display (Section 4) -->
+          <div class="decision-box" id="decisionEngineBox">
+            <!-- Populated by irrigation.js -->
+          </div>
+
+          <!-- Pump Control Panel (Auto AI Engine) -->
+          <div class="irrigation-control-panel">
+            <div class="pump-hero-card">
+              <div class="pump-status-ring pump-stopped" id="pumpStatusRing">
+                ⏹️
+              </div>
+              <div>
+                <h2 id="pumpStatusLabel" style="font-size: 1.3rem; font-weight: 800; color: var(--text-bright);">
+                  PUMP IDLE (STANDBY)
+                </h2>
+                <div id="pumpFlowDisplay" style="font-size: 0.9rem; color: var(--text-muted); margin-top: 4px;">
+                  Flow Rate: 0.0 L/min
+                </div>
+              </div>
+
+              <div class="mode-auto-badge" id="btnModeAuto">
+                <span class="ai-spark-dot">⚡</span>
+                <span data-i18n="mode_auto">AUTO (AI Engine)</span>
+              </div>
+              <div id="modeHelperNote" class="mode-helper-note">
+                🤖 AI Auto Engine: Automatically triggers irrigation when soil moisture drops below threshold (&lt; 40%).
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ==========================================
+           3. VIEW: FARM HEALTH & DISEASE (Section 6 & 10)
+           ========================================== -->
+        <section id="view-health" class="view-section">
+
+          <!-- Soil & Nutrient Health Analysis (Section 6) -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">
+                <span>🧪</span> <span data-i18n="soil_health_title">Soil, Nutrient & Environmental Health</span>
+              </h3>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 16px;" data-i18n="soil_health_desc">
+              Arecanut trees require well-aerated laterite loam soil with pH 5.8 - 6.8. Adequate Potassium (K) prevents
+              nut splitting and button shedding.
+            </p>
+            <div class="daily-summary-grid">
+              <div class="summary-tile">
+                <div class="summary-tile-label" data-i18n="soil_acidity">Soil Acidity (pH)</div>
+                <div class="summary-tile-value" style="color: #f59e0b;">6.15 pH</div>
+                <div class="summary-tile-sub" data-i18n="soil_acidity_sub">Slightly acidic (Normal for Malnad)</div>
+              </div>
+              <div class="summary-tile">
+                <div class="summary-tile-label" data-i18n="nitrogen">Nitrogen (N)</div>
+                <div class="summary-tile-value" style="color: #10b981;">210 mg/kg</div>
+                <div class="summary-tile-sub" data-i18n="canopy_flush_sub">Adequate canopy vegetative flush</div>
+              </div>
+              <div class="summary-tile">
+                <div class="summary-tile-label" data-i18n="phosphorus">Phosphorus (P)</div>
+                <div class="summary-tile-value" style="color: #10b981;">38 mg/kg</div>
+                <div class="summary-tile-sub" data-i18n="root_absorp_sub">Strong root absorption</div>
+              </div>
+              <div class="summary-tile">
+                <div class="summary-tile-label" data-i18n="potassium">Potassium (K)</div>
+                <div class="summary-tile-value" style="color: #10b981;">182 mg/kg</div>
+                <div class="summary-tile-sub" data-i18n="kernel_weight_sub">Optimal kernel bunch weight</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Crop Health & AI Disease Detection (Section 10) -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">
+                <span>🔬</span> <span data-i18n="disease_title">Arecanut Crop Health & AI Disease Detection</span>
+              </h3>
+            </div>
+
+            <div class="disease-container">
+              <div>
+                <div class="dropzone scanner-dropzone" id="diseaseDropzone">
+                  <div class="dropzone-icon-badge">📷</div>
+                  <div style="font-weight: 700; color: var(--text-bright); font-size: 1.15rem; margin-top: 10px;"
+                    data-i18n="upload_prompt">
+                    Take or Upload Photo of Palm
+                  </div>
+                  <div
+                    style="font-size: 0.85rem; color: var(--text-muted); margin-top: 6px; max-width: 320px; margin-left: auto; margin-right: auto; line-height: 1.4;"
+                    data-i18n="upload_sub">
+                    AI automatically detects the plant organ and diagnoses any disease
+                  </div>
+
+                  <div class="scanner-upload-actions">
+                    <button type="button" class="btn-scan-trigger btn-scan-cam" id="btnTriggerCamera">
+                      <span data-i18n="btn_take_photo">📷 Take Photo</span>
+                    </button>
+                    <button type="button" class="btn-scan-trigger btn-scan-file" id="btnTriggerGallery">
+                      <span data-i18n="btn_upload_photo">🖼️ Choose File</span>
+                    </button>
+                  </div>
+
+                  <input type="file" id="diseaseFileInput" accept="image/*" style="display: none;">
+                </div>
+
+                <div style="margin-top: 18px;">
+                  <label class="form-label" data-i18n="sample_presets">Or Test with Field Presets:</label>
+                  <div class="sample-presets-list" id="samplePresetsList">
+                    <!-- Presets for Koleroga, Yellow Leaf, Anabe, Healthy -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- Diagnosis Result Card -->
+              <div id="diagnosisResultArea">
+                <div class="card" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                  <div style="font-size: 3rem; margin-bottom: 12px;">🌿</div>
+                  <h4 data-i18n="disease_prompt_empty">Select a field preset or upload a palm photo to run AI screening.
+                  </h4>
+                  <p style="font-size: 0.85rem; margin-top: 6px;" data-i18n="disease_prompt_sub">Screens for Koleroga
+                    (Fruit Rot), Yellow Leaf Disease (YLD), Anabe roga (Foot rot), and Stem bleeding.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ==========================================
+           4. VIEW: HISTORY & ACTIVITY LOGS (Section 8)
+           ========================================== -->
+        <section id="view-history" class="view-section">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">
+                <span>📜</span> <span data-i18n="history_title">Irrigation & Activity History</span>
+              </h3>
+              <div class="analytics-filters">
+                <button class="filter-btn" data-range="today" data-i18n="filter_today">Today</button>
+                <button class="filter-btn" data-range="yesterday" data-i18n="filter_yesterday">Yesterday</button>
+                <button class="filter-btn active" data-range="7days" data-i18n="filter_7days">7 Days</button>
+                <button class="filter-btn" data-range="30days" data-i18n="filter_30days">30 Days</button>
+              </div>
+            </div>
+
+            <!-- History Period Summary Metric Cards -->
+            <div class="daily-summary-grid" style="margin-bottom: 24px;">
+              <div class="summary-tile">
+                <div class="summary-tile-label" data-i18n="history_water_total">Total Water Used</div>
+                <div class="summary-tile-value" id="historyTotalWater" style="color: #38bdf8;">-- L</div>
+                <div class="summary-tile-sub" id="historyWaterSub" data-i18n="history_for_period">For selected period
+                </div>
+              </div>
+              <div class="summary-tile">
+                <div class="summary-tile-label" data-i18n="history_runtime_total">Irrigation Runtime</div>
+                <div class="summary-tile-value" id="historyTotalRuntime" style="color: #10b981;">-- min</div>
+                <div class="summary-tile-sub" id="historyEventsCount" data-i18n="history_cycles_completed">cycles
+                  completed</div>
+              </div>
+              <div class="summary-tile">
+                <div class="summary-tile-label" data-i18n="history_avg_moisture">Avg Soil Moisture</div>
+                <div class="summary-tile-value" id="historyAvgMoisture" style="color: #f59e0b;">--%</div>
+                <div class="summary-tile-sub" id="historyMoistureTrend">Hydration trend</div>
+              </div>
+              <div class="summary-tile">
+                <div class="summary-tile-label" data-i18n="history_alerts_faults">Alerts & Faults</div>
+                <div class="summary-tile-value" id="historyAlertsCount" style="color: #ef4444;">--</div>
+                <div class="summary-tile-sub" data-i18n="history_safety_events">Logged safety events</div>
+              </div>
+            </div>
+
+            <!-- 1. Irrigation & Water Consumption History Log Table -->
+            <div style="margin-bottom: 30px;">
+              <div
+                style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+                <h4
+                  style="color: var(--text-bright); font-size: 1.05rem; display: flex; align-items: center; gap: 8px; margin: 0;">
+                  <span>💧</span> <span data-i18n="history_irrigation_log_title">Irrigation & Water Consumption
+                    History</span>
+                </h4>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <span style="font-size: 0.8rem; color: var(--text-muted);" id="irrigationLogCountBadge">Showing
+                    events</span>
+                  <button id="btnOpenAddEventModal" class="btn-primary"
+                    style="padding: 6px 14px; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                    <span>➕</span> <span data-i18n="btn_add_past_event">+ Log Past Event</span>
+                  </button>
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th data-i18n="th_datetime">Date & Time</th>
+                      <th data-i18n="th_zone">Zone / Block</th>
+                      <th data-i18n="th_duration">Duration</th>
+                      <th data-i18n="th_water_used">Water Used</th>
+                      <th data-i18n="th_trigger_mode">Trigger Mode</th>
+                      <th data-i18n="th_status">Status</th>
+                      <th data-i18n="th_rationale">Decision Rationale</th>
+                      <th data-i18n="th_actions" style="text-align: center; min-width: 140px;">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="historyIrrigationTableBody">
+                    <tr>
+                      <td colspan="8" style="text-align: center; color: var(--text-muted); padding: 20px;">Loading
+                        irrigation history...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- 2. Safety Alerts & System Events History Table -->
+            <div style="margin-bottom: 30px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                <h4
+                  style="color: var(--text-bright); font-size: 1.05rem; display: flex; align-items: center; gap: 8px;">
+                  <span>🚨</span> <span data-i18n="history_alerts_log_title">Alerts & System Protection Events</span>
+                </h4>
+                <span style="font-size: 0.8rem; color: var(--text-muted);" id="alertsLogCountBadge">Logged events</span>
+              </div>
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th data-i18n="th_timestamp">Timestamp</th>
+                      <th data-i18n="th_category">Category</th>
+                      <th data-i18n="th_severity">Severity</th>
+                      <th data-i18n="th_alert_desc">Alert Description</th>
+                      <th data-i18n="th_action">Recommended Action</th>
+                      <th data-i18n="th_status">Status</th>
+                      <th data-i18n="th_actions" style="text-align: center; min-width: 110px;">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="historyAlertsTableBody">
+                    <tr>
+                      <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 20px;">Loading
+                        alerts history...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- 3. Historical Sensor Telemetry Log Table -->
+            <div>
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                <h4
+                  style="color: var(--text-bright); font-size: 1.05rem; display: flex; align-items: center; gap: 8px;">
+                  <span>📊</span> <span data-i18n="history_telemetry_log_title">Historical Sensor Telemetry Log
+                    Records</span>
+                </h4>
+                <span style="font-size: 0.8rem; color: var(--text-muted);"
+                  data-i18n="history_periodic_captures">Periodic field captures</span>
+              </div>
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th data-i18n="th_timestamp">Timestamp</th>
+                      <th data-i18n="th_moisture">Soil Moisture</th>
+                      <th data-i18n="th_ph">Soil pH</th>
+                      <th data-i18n="th_npk">N - P - K (mg/kg)</th>
+                      <th data-i18n="th_tank">Tank Level</th>
+                      <th data-i18n="th_temp_hum">Temp / Humidity</th>
+                    </tr>
+                  </thead>
+                  <tbody id="historyTelemetryTableBody">
+                    <tr>
+                      <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 20px;">Loading
+                        telemetry records...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ==========================================
+           5. VIEW: IOT MONITORING & HARDWARE NODE (Admin Only)
+           ========================================== -->
+        <section id="view-oled" class="view-section admin-only">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">
+                <span>📡</span> <span data-i18n="oled_title">IoT Node & Hardware Monitor (SSD1306 OLED)</span>
+              </h3>
+              <span class="sensor-badge sensor-badge-online" data-i18n="oled_badge"
+                style="background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; color: #34d399;">🛡️ Admin IoT
+                Gateway</span>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 18px;" data-i18n="oled_sub">
+              Engineering diagnostics center for the on-field ESP32 IoT gateway. Live telemetry streaming from field
+              sensors, 12V solenoid actuators, and hardware bus health for administrators.
+            </p>
+
+            <!-- Quick Hardware Specifications Strip -->
+            <div class="iot-specs-strip">
+              <div class="iot-spec-badge">
+                <span>🧠 Node:</span> <strong>ESP32-WROOM-32D (240MHz)</strong>
+              </div>
+              <div class="iot-spec-badge">
+                <span>📟 Display:</span> <strong>0.96" I2C OLED (0x3C)</strong>
+              </div>
+              <div class="iot-spec-badge">
+                <span>⚡ Power:</span> <strong>12V 10A SMPS (Dual-Rail)</strong>
+              </div>
+              <div class="iot-spec-badge">
+                <span>🚰 Actuator:</span> <strong>12V Solenoid Valve (Drip Line)</strong>
+              </div>
+              <div class="iot-spec-badge">
+                <span>⏱️ Rate:</span> <strong>1.0 Hz Real-Time Stream</strong>
+              </div>
+            </div>
+
+            <!-- Two-Column Diagnostic Layout -->
+            <div class="iot-monitoring-layout">
+
+              <!-- Left Column: The Physical Enclosure Mockup -->
+              <div>
+                <!-- Screen Navigation Pills -->
+                <div class="oled-screen-pills">
+                  <button class="oled-screen-pill active" data-page="1">1. Sensors (DHT22/LDR)</button>
+                  <button class="oled-screen-pill" data-page="2">2. Nutrients (NPK/pH)</button>
+                  <button class="oled-screen-pill" data-page="3">3. 12V Valve & Pump</button>
+                  <button class="oled-screen-pill" data-page="4">4. Node Bus Health</button>
+                </div>
+
+                <div class="oled-module-wrapper">
+                  <div class="oled-enclosure-header">
+                    <div class="hardware-label">ESP32-ARECA IOT NODE v2.5</div>
+                    <div class="hardware-leds">
+                      <div class="hardware-led">
+                        <span class="led-dot led-pwr active" id="oledLedPwr"></span> PWR
+                      </div>
+                      <div class="hardware-led">
+                        <span class="led-dot led-wifi active" id="oledLedWifi"></span> WI-FI
+                      </div>
+                      <div class="hardware-led">
+                        <span class="led-dot led-pump" id="oledLedPump"></span> PUMP
+                      </div>
+                      <div class="hardware-led">
+                        <span class="led-dot led-valve" id="oledLedValve"></span> 12V VALVE
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Glass Screen Bezel -->
+                  <div class="oled-glass-bezel">
+                    <div class="oled-screen-matrix" id="oledScreenContent">
+                      <!-- Lines rendered dynamically by oled.js -->
+                    </div>
+                  </div>
+
+                  <!-- Enclosure Tactile Buttons -->
+                  <div class="oled-tactile-buttons">
+                    <button class="oled-btn" id="btnOledPrev" data-i18n="oled_btn_prev">◀ PREV</button>
+                    <button class="oled-btn" id="btnOledSelect" style="color: #38bdf8;"
+                      data-i18n="oled_btn_cycle">CYCLE</button>
+                    <button class="oled-btn" id="btnOledNext" data-i18n="oled_btn_next">NEXT ▶</button>
+                  </div>
+                  <div style="text-align: center; margin-top: 8px; font-size: 0.72rem; color: #64748b;"
+                    id="oledPageIndicator">
+                    PAGE 1/4: PRIMARY SENSORS
+                  </div>
+                </div>
+
+                <!-- Hardware Gateway Connection Details Box -->
+                <div
+                  style="background: rgba(0,0,0,0.25); padding: 14px; border-radius: var(--radius-md); max-width: 460px; margin: 0 auto; font-size: 0.82rem; color: var(--text-muted); border: 1px solid var(--border-subtle);">
+                  <div><strong data-i18n="oled_wifi_info">Wi-Fi Connection: Station "ArecaNet_Farm" (-54 dBm)</strong>
+                  </div>
+                  <div data-i18n="oled_hw_info">Controller: Dual-Core ESP32-WROOM-32D @ 240MHz (3.3V Logic, I2C @
+                    400kHz)</div>
+                  <div data-i18n="oled_endpoint_info">Hardware Telemetry Endpoint: POST /api/telemetry/push (Direct
+                    sensor stream)</div>
+                </div>
+              </div>
+
+              <!-- Right Column: Admin Real-Time Telemetry Decoder Panel -->
+              <div>
+                <div class="admin-decoder-card" id="adminOledDecoder">
+                  <!-- Dynamically populated in real time by oled.js based on active OLED page -->
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ==========================================
+           6. VIEW: ADMIN OPERATIONS (Section 1 & 15)
+           ========================================== -->
+        <section id="view-admin" class="view-section admin-only">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">
+                <span>🛡️</span> <span data-i18n="admin_title">Admin Farm Operations & Management</span>
+              </h3>
+              <button class="btn-primary" id="btnOpenAddFarmerModal"
+                style="width: auto; padding: 10px 18px; font-size: 0.9rem;" data-i18n="btn_add_farmer">
+                + Register New Farmer
+              </button>
+            </div>
+
+            <!-- Admin Metric Cards -->
+            <div class="admin-stat-grid" id="adminOverviewMetrics">
+              <!-- Populated by admin.js -->
+            </div>
+
+            <!-- All Farmers & Estates Table -->
+            <div style="margin-top: 24px;">
+              <h4 style="color: var(--text-bright); margin-bottom: 12px;" data-i18n="farmer_list_title">
+                Registered Farmers & Estates
+              </h4>
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th data-i18n="th_farmer_name">Farmer Name</th>
+                      <th data-i18n="th_estate_loc">Estate & Location</th>
+                      <th data-i18n="th_size_palms">Size & Palms</th>
+                      <th data-i18n="th_moisture">Soil Moisture</th>
+                      <th data-i18n="th_pump_status">Pump Status</th>
+                      <th data-i18n="th_actions">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="adminFarmersTableBody">
+                    <!-- Populated by admin.js -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div> <!-- /.app-layout -->
+  </div> <!-- /.app-floating-container -->
+
+  <!-- Floating Voice Assistant Button (Section 10) -->
+  <button class="floating-voice-trigger" id="floatingVoiceBtn" title="Farm Voice Assistant / ಧ್ವನಿ ಸಹಾಯಕ"
+    aria-label="Farm Voice Assistant">
+    🎙️
+  </button>
+
+  <!-- Floating AI Chatbot Button & Drawer (Section 9) -->
+  <button class="floating-chat-trigger" id="floatingChatBtn" title="AI Farmer Assistant">
+    💬
+  </button>
+
+  <!-- Voice Assistant Live Telemetry Broadcaster Modal -->
+  <div class="voice-assistant-modal" id="voiceAssistantModal" style="display: none;">
+    <div class="voice-modal-backdrop" id="voiceModalBackdrop"></div>
+    <div class="voice-modal-card">
+      <div class="voice-modal-header">
+        <div class="voice-header-title">
+          <span class="voice-pulse-dot">🎙️</span>
+          <div>
+            <h3 data-i18n="voice_asst_title">Farm Voice Assistant</h3>
+            <span class="voice-sub" data-i18n="voice_asst_sub">ತೋಟದ ನೇರ ಧ್ವನಿ ವರದಿ • Live Farm Telemetry</span>
+          </div>
+        </div>
+        <button class="btn-icon" id="btnCloseVoiceModal" title="Close" style="width: 32px; height: 32px;">✕</button>
+      </div>
+
+      <!-- Live Equalizer Animation -->
+      <div class="voice-wave-container" id="voiceWaveContainer">
+        <div class="voice-wave-bar bar-1"></div>
+        <div class="voice-wave-bar bar-2"></div>
+        <div class="voice-wave-bar bar-3"></div>
+        <div class="voice-wave-bar bar-4"></div>
+        <div class="voice-wave-bar bar-5"></div>
+        <div class="voice-wave-bar bar-6"></div>
+        <span class="voice-status-text" id="voiceStatusText">Broadcasting live farm report...</span>
+      </div>
+
+      <!-- Live Farm Metric Summary Pills (Directly matching Real-Time Farm Telemetry) -->
+      <div class="voice-metrics-grid">
+        <div class="voice-metric-pill" id="voicePillMoisture">
+          <span class="metric-icon">💧</span>
+          <div>
+            <span class="metric-label">1. Soil Moisture / ತೇವಾಂಶ</span>
+            <strong id="voiceMoistureVal">55.0%</strong>
+          </div>
+        </div>
+        <div class="voice-metric-pill" id="voicePillPh">
+          <span class="metric-icon">🧪</span>
+          <div>
+            <span class="metric-label">2. Soil pH / ಪಿಎಚ್</span>
+            <strong id="voicePhVal">6.17 pH</strong>
+          </div>
+        </div>
+        <div class="voice-metric-pill" id="voicePillNpk">
+          <span class="metric-icon">🌱</span>
+          <div>
+            <span class="metric-label">3. N-P-K / ಪೋಷಕಾಂಶ</span>
+            <strong id="voiceNpkVal">210 - 38 - 185</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Language Switch & Audio Controls -->
+      <div class="voice-controls-row">
+        <button class="btn-voice-lang active" id="btnVoiceSpeakKn" type="button">
+          <span>🔊</span> <span data-i18n="voice_listen_kn">ಕನ್ನಡದಲ್ಲಿ ಕೇಳಿ (Kannada)</span>
+        </button>
+        <button class="btn-voice-lang" id="btnVoiceSpeakEn" type="button">
+          <span>🔊</span> <span data-i18n="voice_listen_en">Listen in English</span>
+        </button>
+        <button class="btn-voice-stop" id="btnVoiceStop" type="button" title="Stop Audio">
+          <span>⏹️</span> <span data-i18n="voice_stop_btn">Stop / ನಿಲ್ಲಿಸಿ</span>
+        </button>
+      </div>
+
+      <!-- Live Speech Transcript Box -->
+      <div class="voice-transcript-box">
+        <div class="transcript-header">
+          <span>ಧ್ವನಿ ವಿವರಣೆ (Voice Transcript):</span>
+        </div>
+        <div class="transcript-content" id="voiceTranscriptContent">
+          ವರದಿ ಲೋಡ್ ಆಗುತ್ತಿದೆ...
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-drawer" id="chatDrawer">
+    <div class="chat-header">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 1.4rem;">🤖</span>
+        <div>
+          <h4 style="color: var(--text-bright); font-size: 1rem;" data-i18n="chatbot_title">Areca Farm AI Advisor</h4>
+          <div style="display: flex; align-items: center; gap: 6px; margin-top: 2px;">
+            <span style="font-size: 0.7rem; color: var(--primary-400);" data-i18n="chatbot_sub">● Live Grounded</span>
+            <span id="groqStatusBadge" title="Click to view or set Groq API Key"
+              style="cursor: pointer; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); font-weight: 700;">⚙️
+              Groq Key</span>
+          </div>
+        </div>
+      </div>
+      <button class="btn-icon" id="btnCloseChat" style="width: 32px; height: 32px; font-size: 0.9rem;">✕</button>
+    </div>
+
+    <!-- Groq API Key Quick Configuration Panel -->
+    <div id="groqKeyConfigBox"
+      style="display: none; background: rgba(0, 0, 0, 0.45); border-bottom: 1px solid var(--border-subtle); padding: 10px 14px; font-size: 0.8rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+        <strong style="color: #38bdf8; display: flex; align-items: center; gap: 4px; font-size: 0.82rem;">⚡ Groq AI
+          Engine (Llama 3.3 70B)</strong>
+        <span id="btnCloseGroqBox" style="cursor: pointer; color: var(--text-muted); font-size: 0.8rem;">✕</span>
+      </div>
+      <div style="color: var(--text-muted); font-size: 0.72rem; margin-bottom: 8px; line-height: 1.35;">
+        Paste your Groq Cloud API key (starts with <code style="color: #38bdf8; font-weight: bold;">gsk_...</code>) for
+        high-accuracy agronomy reasoning:
+      </div>
+      <div style="display: flex; gap: 6px;">
+        <input type="password" id="groqApiKeyInput" class="form-input"
+          style="padding: 6px 10px; font-size: 0.78rem; font-family: monospace; height: 32px;" placeholder="gsk_...">
+        <button id="btnSaveGroqKey" class="btn-primary"
+          style="width: auto; padding: 0 12px; font-size: 0.78rem; height: 32px; white-space: nowrap;">Save</button>
+      </div>
+      <div id="groqKeyMsg" style="margin-top: 6px; font-size: 0.72rem; display: none;"></div>
+    </div>
+
+    <div class="chat-body" id="chatMessagesBody">
+      <!-- Populated by chatbot.js -->
+    </div>
+
+    <!-- Quick Question Suggestions -->
+    <div class="chat-suggestions" id="chatSuggestionsRow">
+      <!-- Populated by chatbot.js -->
+    </div>
+
+    <!-- Voice Recognition Live Status Banner -->
+    <div id="chatVoiceStatusBar"
+      style="display: none; padding: 8px 14px; background: rgba(15, 23, 42, 0.95); border-top: 1px solid var(--border-subtle); font-size: 0.78rem; align-items: center; justify-content: space-between; gap: 8px;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <div class="voice-soundwave" id="voiceSoundwave" style="display: flex; align-items: center; gap: 2px;">
+          <span class="wave-bar"></span>
+          <span class="wave-bar"></span>
+          <span class="wave-bar"></span>
+          <span class="wave-bar"></span>
+        </div>
+        <span id="voiceStatusMsg" style="font-weight: 600; color: #38bdf8;">Listening... Speak now</span>
+      </div>
+      <button id="btnStopVoiceListening" type="button"
+        style="background: var(--primary-600); border: none; color: #fff; border-radius: 4px; padding: 4px 10px; font-size: 0.72rem; font-weight: 600; cursor: pointer;">Done
+        ✓</button>
+    </div>
+
+    <!-- Chat Input Form -->
+    <div class="chat-input-row">
+      <input type="text" id="chatTextInput" class="chat-input" data-i18n="chatbot_placeholder"
+        placeholder="Ask about your farm...">
+      <button id="btnVoiceChat" class="btn-voice-chat" type="button" title="Voice Search (Speak question)"
+        data-i18n-title="btn_mic_title">
+        <svg id="voiceMicSvg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+          <line x1="12" y1="19" x2="12" y2="23"></line>
+          <line x1="8" y1="23" x2="16" y2="23"></line>
+        </svg>
+      </button>
+      <button id="btnSendChat" class="btn-send-chat" title="Send message" data-i18n="btn_send">➤</button>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL: AUTHENTICATION (DUAL-ROLE) (Section 1)
+       ========================================== -->
+  <div class="modal-overlay" id="authModal">
+    <div class="modal-card">
+      <div class="modal-title">
+        <span data-i18n="login_title">🔐 Sign In to Areca Farm</span>
+      </div>
+
+      <div class="auth-tabs">
+        <div class="auth-tab active" id="tabFarmerLogin" data-i18n="login_farmer">Farmer Login</div>
+        <div class="auth-tab" id="tabAdminLogin" data-i18n="login_admin">Admin Login</div>
+      </div>
+
+      <div id="authError"
+        style="display: none; background: rgba(239, 68, 68, 0.2); border-left: 4px solid var(--status-critical); padding: 10px; border-radius: 4px; color: #fca5a5; font-size: 0.85rem; margin-bottom: 14px;">
+      </div>
+
+      <!-- Farmer Login Form (Phone + Password only) -->
+      <form id="farmerLoginForm">
+        <div class="form-group">
+          <label class="form-label" data-i18n="phone_label">Mobile Phone Number</label>
+          <input type="text" id="farmerPhoneInput" class="form-input" placeholder="9876543210" value="9876543210"
+            required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="password_label">Password</label>
+          <input type="password" id="farmerPasswordInput" class="form-input" placeholder="••••••••" value="farmer123"
+            required>
+        </div>
+        <button type="submit" class="btn-primary" data-i18n="btn_login_farmer">Sign In as Farmer</button>
+        <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 10px; text-align: center;"
+          data-i18n="demo_farmer_hint">
+          Demo Farmer: 9876543210 / farmer123
+        </div>
+      </form>
+
+      <!-- Admin Login Form (Email + Password) -->
+      <form id="adminLoginForm" style="display: none;">
+        <div class="form-group">
+          <label class="form-label" data-i18n="email_label">Admin Email Address</label>
+          <input type="email" id="adminEmailInput" class="form-input" placeholder="admin@areca.farm"
+            value="admin@areca.farm" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="password_label">Password</label>
+          <input type="password" id="adminPasswordInput" class="form-input" placeholder="••••••••" value="admin123"
+            required>
+        </div>
+        <button type="submit" class="btn-primary" data-i18n="btn_login_admin">Sign In as Admin</button>
+        <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 10px; text-align: center;"
+          data-i18n="demo_admin_hint">
+          Demo Admin: admin@areca.farm / admin123
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD FARMER (ADMIN) -->
+  <div class="modal-overlay" id="modalAddFarmer">
+    <div class="modal-card">
+      <div class="modal-title">
+        <span data-i18n="modal_register_title">🌱 Register New Farmer & Plantation</span>
+        <button class="btn-icon btn-close-modal" style="width: 32px; height: 32px;">✕</button>
+      </div>
+      <form id="formAddFarmer">
+        <div class="form-group">
+          <label class="form-label" data-i18n="lbl_farmer_name">Farmer Full Name</label>
+          <input type="text" id="newFarmerName" class="form-input" placeholder="e.g. Manjunatha Bhat" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="lbl_phone_id">Phone Number (Login ID)</label>
+          <input type="text" id="newFarmerPhone" class="form-input" placeholder="9870001122" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="lbl_password">Password</label>
+          <input type="password" id="newFarmerPassword" class="form-input" value="farmer123" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="lbl_email_opt">Email (Optional)</label>
+          <input type="email" id="newFarmerEmail" class="form-input" placeholder="farmer@areca.farm">
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="lbl_farm_name">Plantation / Farm Name</label>
+          <input type="text" id="newFarmName" class="form-input" placeholder="e.g. Gayatri Areca Estate" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="lbl_location">Location (Taluk, District)</label>
+          <input type="text" id="newFarmLocation" class="form-input" placeholder="e.g. Sagara, Shivamogga" required>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label" data-i18n="lbl_area">Area (Acres)</label>
+            <input type="number" step="0.1" id="newFarmArea" class="form-input" value="5.0" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="lbl_trees">Tree Count</label>
+            <input type="number" id="newFarmTrees" class="form-input" value="1200" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="lbl_soil">Soil Type</label>
+          <input type="text" id="newFarmSoil" class="form-input" value="Laterite Red Loam">
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="lbl_irrigation">Irrigation System</label>
+          <input type="text" id="newFarmIrrigation" class="form-input" value="Automated Drip & Jet Sprinkler">
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="lbl_tank_cap">Tank Storage Capacity (Litres)</label>
+          <input type="number" id="newFarmTank" class="form-input" value="15000">
+        </div>
+        <button type="submit" class="btn-primary" data-i18n="btn_register_submit">Register Farmer & Plantation</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: THRESHOLDS CONFIGURATION (ADMIN) -->
+  <div class="modal-overlay" id="modalThresholds">
+    <div class="modal-card">
+      <div class="modal-title">
+        <span data-i18n="modal_thresh_title">⚙️ Configure Irrigation Thresholds</span>
+        <button class="btn-icon btn-close-modal" style="width: 32px; height: 32px;">✕</button>
+      </div>
+      <form id="formThresholds">
+        <input type="hidden" id="thresholdFarmId">
+        <div class="form-group">
+          <label class="form-label" data-i18n="lbl_thresh_min">Minimum Soil Moisture Trigger (%)</label>
+          <input type="number" step="0.5" id="threshMinMoisture" class="form-input" value="42.0" required>
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;" data-i18n="thresh_min_sub">Pump
+            turns ON automatically when soil moisture drops below this value.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="lbl_thresh_target">Target Moisture Cutoff (%)</label>
+          <input type="number" step="0.5" id="threshTargetMoisture" class="form-input" value="70.0" required>
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;" data-i18n="thresh_target_sub">Pump
+            halts when target hydration is reached.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="lbl_thresh_cutoff">Critical Water Tank Cutoff (%)</label>
+          <input type="number" step="1" id="threshTankCutoff" class="form-input" value="15.0" required>
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;" data-i18n="thresh_cutoff_sub">
+            Emergency lockout triggers below this level to prevent pump damage.</div>
+        </div>
+        <button type="submit" class="btn-primary" data-i18n="btn_save_thresh">Save Threshold Settings</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: EDIT / ADD IRRIGATION EVENT (HISTORY) -->
+  <div class="modal-overlay" id="modalEditIrrigationEvent">
+    <div class="modal-card" style="max-width: 520px;">
+      <div class="modal-title">
+        <span id="modalEventTitle" data-i18n="modal_edit_event_title">✏️ Edit Irrigation Event</span>
+        <button type="button" class="btn-icon btn-close-modal" id="btnCloseEventModal"
+          style="width: 32px; height: 32px;">✕</button>
+      </div>
+      <form id="formEditIrrigationEvent">
+        <input type="hidden" id="editEventId" value="">
+
+        <div class="form-group">
+          <label class="form-label" data-i18n="lbl_event_zone">Zone / Block Name</label>
+          <select id="editEventZone" class="form-input" required>
+            <option value="Zone 1 - Main South Block">Zone 1 - Main South Block</option>
+            <option value="Zone 2 - Intercrop Block (Cocoa/Pepper)">Zone 2 - Intercrop Block (Cocoa/Pepper)</option>
+            <option value="Zone 3 - Nursery Block">Zone 3 - Nursery Block</option>
+          </select>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label" data-i18n="lbl_event_duration">Duration (Minutes)</label>
+            <input type="number" step="1" min="1" id="editEventDuration" class="form-input" value="30" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="lbl_event_water">Water Used (Litres)</label>
+            <input type="number" step="1" min="1" id="editEventWater" class="form-input" value="1350" required>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label" data-i18n="lbl_event_trigger">Trigger Mode</label>
+            <select id="editEventTrigger" class="form-input" required>
+              <option value="Manual Farmer Override">Manual Farmer Override</option>
+              <option value="Smart Irrigation Engine">Smart Irrigation Engine</option>
+              <option value="Scheduled Drip Cycle">Scheduled Drip Cycle</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="lbl_event_status">Status</label>
+            <select id="editEventStatus" class="form-input" required>
+              <option value="COMPLETED">COMPLETED</option>
+              <option value="RUNNING">RUNNING</option>
+              <option value="INTERRUPTED">INTERRUPTED</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" data-i18n="lbl_event_reason">Decision Rationale / Notes</label>
+          <textarea id="editEventReason" class="form-input" rows="3" style="resize: vertical;"
+            placeholder="Farmer manual watering cycle or reason..."></textarea>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 18px;">
+          <button type="submit" class="btn-primary" style="flex: 1;" data-i18n="btn_save_changes">Save Changes</button>
+          <button type="button" id="btnDeleteEventFromModal" class="btn-outline"
+            style="color: var(--status-critical); border-color: var(--status-critical); display: none;"
+            data-i18n="btn_delete">Delete</button>
+          <button type="button" class="btn-outline" id="btnCancelEventModal" data-i18n="btn_cancel">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL: SETTINGS (GENERAL, THEMES, ABOUT)
+       ========================================== -->
+  <div class="modal-overlay" id="modalSettings">
+    <div class="modal-card settings-modal-card" style="max-width: 480px; width: 95%;">
+      <!-- Header -->
+      <div class="modal-title"
+        style="margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border-subtle);">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div class="settings-title-icon" style="color: var(--forest-600); display: inline-flex; align-items: center;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path
+                d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z">
+              </path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </div>
+          <span style="font-size: 1.15rem; font-weight: 800; color: var(--text-bright);"
+            data-i18n="settings_title">Settings</span>
+        </div>
+        <button type="button" class="btn-icon btn-close-modal" id="btnCloseSettingsModal" aria-label="Close Settings"
+          style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="settings-content-scroll">
+
+        <!-- SECTION 1: GENERAL -->
+        <div class="settings-block" id="settingsSectionGeneral">
+          <div class="settings-section-heading">
+            <span data-i18n="settings_sec_general">General</span>
+          </div>
+          <div class="settings-list-card">
+
+            <!-- User Name Row -->
+            <div class="settings-item-row" id="rowSettingUserName">
+              <div class="settings-item-left">
+                <span class="settings-item-icon">👤</span>
+                <div class="settings-item-info">
+                  <div class="settings-item-label" data-i18n="lbl_user_name">User Name</div>
+                  <div class="settings-item-value" id="settingsUserNameDisplay">Farmer</div>
+                </div>
+              </div>
+              <button type="button" class="settings-item-action-btn" id="btnEditUserName"
+                data-i18n="btn_change">Change</button>
+            </div>
+
+            <!-- Password Row -->
+            <div class="settings-item-row" id="rowSettingPassword">
+              <div class="settings-item-left">
+                <span class="settings-item-icon">🔒</span>
+                <div class="settings-item-info">
+                  <div class="settings-item-label" data-i18n="lbl_password">Password</div>
+                  <div class="settings-item-value">••••••••</div>
+                </div>
+              </div>
+              <button type="button" class="settings-item-action-btn" id="btnChangePassword"
+                data-i18n="btn_change">Change</button>
+            </div>
+
+            <!-- Mobile Number Row -->
+            <div class="settings-item-row" id="rowSettingPhone">
+              <div class="settings-item-left">
+                <span class="settings-item-icon">📱</span>
+                <div class="settings-item-info">
+                  <div class="settings-item-label" data-i18n="lbl_mobile_number">Mobile Number</div>
+                  <div class="settings-item-value" id="settingsUserPhoneDisplay">+91 98450 12345</div>
+                </div>
+              </div>
+              <button type="button" class="settings-item-action-btn" id="btnEditUserPhone"
+                data-i18n="btn_change">Change</button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- SECTION 2: THEMES -->
+        <div class="settings-block" id="settingsSectionThemes" style="margin-top: 18px;">
+          <div class="settings-section-heading">
+            <span data-i18n="settings_sec_themes">Themes</span>
+          </div>
+          <div class="theme-cards-grid">
+            <button type="button" class="theme-card-btn active" id="btnThemeLight">
+              <span class="theme-card-icon">☀</span>
+              <span class="theme-card-label" data-i18n="theme_light">Light Theme</span>
+              <span class="theme-card-badge" id="badgeThemeLight" data-i18n="lbl_selected">Selected ✓</span>
+            </button>
+            <button type="button" class="theme-card-btn" id="btnThemeDark">
+              <span class="theme-card-icon">🌙</span>
+              <span class="theme-card-label" data-i18n="theme_dark">Dark Theme</span>
+              <span class="theme-card-badge" id="badgeThemeDark" style="display: none;"
+                data-i18n="lbl_selected">Selected ✓</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- SECTION 3: ABOUT -->
+        <div class="settings-block" id="settingsSectionAbout" style="margin-top: 18px;">
+          <div class="settings-section-heading">
+            <span data-i18n="settings_sec_about">About</span>
+          </div>
+          <div class="settings-about-card">
+            <div class="settings-about-top">
+              <div class="brand-logo-icon" style="width: 44px; height: 44px; font-size: 1.5rem; flex-shrink: 0;">🌴
+              </div>
+              <div>
+                <div class="settings-about-title">Arecanut Smart Farm</div>
+                <div class="settings-about-subtitle">IoT Precision Irrigation &amp; AI Advisor</div>
+              </div>
+            </div>
+            <div class="settings-about-version-row">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 1.05rem;">ℹ</span>
+                <span style="font-weight: 600; color: var(--text-bright);" data-i18n="lbl_version">Version</span>
+              </div>
+              <span class="settings-version-tag">Version 2.0.0</span>
+            </div>
+            <p class="settings-about-desc">
+              IoT precision irrigation and AI diagnostic companion for arecanut cultivation. Integrates automated soil
+              moisture monitoring, valve automation, and crop advisory.
+            </p>
+            <div class="settings-about-copyright">
+              © Arecanut Smart Farm
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Sub-Modal: Change User Name -->
+  <div class="modal-overlay" id="modalEditUserName">
+    <div class="modal-card" style="max-width: 400px; width: 92%;">
+      <div class="modal-title">
+        <span style="display: flex; align-items: center; gap: 8px;">
+          <span>👤</span> <span data-i18n="lbl_user_name">User Name</span>
+        </span>
+        <button type="button" class="btn-icon btn-close-modal" id="btnCloseEditUserName">✕</button>
+      </div>
+      <form id="formEditUserName" style="margin-top: 14px;">
+        <div class="form-group">
+          <label class="form-label" data-i18n="lbl_user_name">User Name</label>
+          <input type="text" id="inputEditUserName" class="form-input" required maxlength="60" placeholder="Enter name">
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 18px;">
+          <button type="submit" class="btn-primary" style="flex: 1;" data-i18n="btn_save_changes">Save Changes</button>
+          <button type="button" class="btn-outline" id="btnCancelEditUserName" data-i18n="btn_cancel">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Sub-Modal: Change Password -->
+  <div class="modal-overlay" id="modalChangePassword">
+    <div class="modal-card" style="max-width: 400px; width: 92%;">
+      <div class="modal-title">
+        <span style="display: flex; align-items: center; gap: 8px;">
+          <span>🔒</span> <span data-i18n="change_pw_title">Change Password</span>
+        </span>
+        <button type="button" class="btn-icon btn-close-modal" id="btnCloseChangePassword">✕</button>
+      </div>
+      <form id="formChangePassword" style="margin-top: 14px;">
+        <div class="form-group">
+          <label class="form-label" data-i18n="current_pw">Current Password</label>
+          <input type="password" id="inputCurrentPassword" class="form-input" required placeholder="••••••••">
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="new_pw">New Password</label>
+          <input type="password" id="inputNewPassword" class="form-input" required minlength="6"
+            placeholder="At least 6 characters">
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="confirm_pw">Confirm Password</label>
+          <input type="password" id="inputConfirmPassword" class="form-input" required minlength="6"
+            placeholder="Repeat new password">
+        </div>
+        <div id="changePwError"
+          style="display: none; color: var(--status-critical); font-size: 0.8rem; margin-top: 6px;"></div>
+        <div id="changePwSuccess" style="display: none; color: var(--forest-600); font-size: 0.8rem; margin-top: 6px;">
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 18px;">
+          <button type="submit" class="btn-primary" style="flex: 1;" data-i18n="btn_save_changes">Save Changes</button>
+          <button type="button" class="btn-outline" id="btnCancelChangePassword" data-i18n="btn_cancel">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Sub-Modal: Change Mobile Number -->
+  <div class="modal-overlay" id="modalEditUserPhone">
+    <div class="modal-card" style="max-width: 400px; width: 92%;">
+      <div class="modal-title">
+        <span style="display: flex; align-items: center; gap: 8px;">
+          <span>📱</span> <span data-i18n="lbl_mobile_number">Mobile Number</span>
+        </span>
+        <button type="button" class="btn-icon btn-close-modal" id="btnCloseEditUserPhone">✕</button>
+      </div>
+      <form id="formEditUserPhone" style="margin-top: 14px;">
+        <div class="form-group">
+          <label class="form-label" data-i18n="lbl_mobile_number">Mobile Number</label>
+          <input type="tel" id="inputEditUserPhone" class="form-input" required pattern="[0-9+ ]{10,15}"
+            placeholder="+91 98450 12345">
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 18px;">
+          <button type="submit" class="btn-primary" style="flex: 1;" data-i18n="btn_save_changes">Save Changes</button>
+          <button type="button" class="btn-outline" id="btnCancelEditUserPhone" data-i18n="btn_cancel">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Application Scripts -->
+  <script src="js/i18n.js?v=38"></script>
+  <script src="js/api.js?v=38"></script>
+  <script src="js/auth.js?v=38"></script>
+  <script src="js/farmer.js?v=38"></script>
+  <script src="js/sensors.js?v=38"></script>
+  <script src="js/irrigation.js?v=38"></script>
+  <script src="js/disease.js?v=38"></script>
+  <script src="js/analytics.js?v=38"></script>
+  <script src="js/oled.js?v=38"></script>
+  <script src="js/chatbot.js?v=38"></script>
+  <script src="js/voice_assistant.js?v=38"></script>
+  <script src="js/admin.js?v=38"></script>
+  <script src="js/simulation_ui.js?v=38"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("service-worker.js?v=38")
+          .then((reg) => {
+            console.log("Service Worker registered successfully (v38)");
+            // Check for service worker updates immediately on PWA launch
+            if (reg && reg.update) {
+              reg.update();
+            }
+          })
+          .catch((error) => {
+            console.error("Service Worker registration failed:", error);
+          });
+      });
+
+      // Seamlessly refresh once when new service worker takes over so installed desktop PWA gets latest UI
+      let isRefreshing = false;
+      navigator.serviceWorker.addEventListener("controllerchange", () => {
+        if (!isRefreshing) {
+          isRefreshing = true;
+          window.location.reload();
+        }
+      });
+    }
+  </script>
+
+</body>
+
+</html>

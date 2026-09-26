@@ -1,0 +1,1267 @@
+/* =========================================================
+   RESPONSIVE & MOBILE-FIRST ERGONOMICS ARCHITECTURE
+   Arecanut Smart Farm Dashboard & Companion System
+   Target Screen Tiers:
+     - Mobile: 320px – 480px
+     - Tablet: 481px – 768px
+     - Laptop: 769px – 1440px
+     - Large Desktop: 1441px+
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   1. GLOBAL RESPONSIVE RESETS & FLUID CONTAINERS
+   --------------------------------------------------------- */
+html {
+  box-sizing: border-box;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
+  width: 100%;
+  position: relative;
+}
+
+img, svg, video, canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Fluid responsive table wrapper */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+  scrollbar-width: thin;
+}
+
+.table-responsive::-webkit-scrollbar {
+  height: 6px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background: rgba(45, 106, 79, 0.4);
+  border-radius: 4px;
+}
+
+/* ---------------------------------------------------------
+   2. HAMBURGER BUTTON & MOBILE DRAWER NAVIGATION
+   --------------------------------------------------------- */
+.btn-hamburger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 4px;
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  cursor: pointer;
+  padding: 8px 6px;
+  transition: all var(--transition-fast);
+  color: var(--text-bright);
+}
+
+.btn-hamburger:hover {
+  background: var(--bg-surface);
+  border-color: var(--forest-400);
+}
+
+.hamburger-line {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.btn-hamburger.active .hamburger-line:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.btn-hamburger.active .hamburger-line:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.btn-hamburger.active .hamburger-line:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+/* Mobile Nav Backdrop Overlay */
+.mobile-nav-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 25, 18, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1090;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.mobile-nav-backdrop.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Mobile Slide-Out Navigation Drawer */
+.mobile-nav-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 290px;
+  max-width: 86vw;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border-right: 1px solid var(--border-subtle);
+  box-shadow: 12px 0 40px rgba(10, 35, 20, 0.28);
+  z-index: 1095;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow-y: auto;
+}
+
+body.dark-theme .mobile-nav-drawer {
+  background: rgba(18, 36, 26, 0.96);
+  border-right-color: rgba(116, 198, 157, 0.25);
+  box-shadow: 12px 0 40px rgba(0, 0, 0, 0.7);
+}
+
+.mobile-nav-drawer.open {
+  transform: translateX(0);
+}
+
+.mobile-drawer-header {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.mobile-drawer-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.drawer-header-btn {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
+  cursor: pointer;
+  color: var(--text-bright);
+  transition: all var(--transition-fast);
+  padding: 0;
+}
+
+.drawer-header-btn:hover {
+  background: var(--bg-surface);
+  border-color: var(--forest-400);
+  transform: translateY(-1px);
+}
+
+body.dark-theme .drawer-header-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #e2e8f0;
+}
+
+body.dark-theme .drawer-header-btn:hover {
+  background: rgba(34, 107, 74, 0.25);
+  border-color: #34d399;
+  color: #86efac;
+}
+
+.desktop-nav-footer {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+/* Theme selector cards in Settings Modal */
+.theme-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.theme-card-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 22px 14px;
+  border-radius: 18px;
+  background: var(--bg-surface-subtle);
+  border: 2px solid var(--border-subtle);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  color: var(--text-bright);
+  min-height: 105px;
+}
+
+.theme-card-btn:hover {
+  border-color: var(--forest-400);
+  background: var(--bg-surface-elevated);
+  transform: translateY(-2px);
+}
+
+.theme-card-btn.active {
+  border-color: var(--forest-600);
+  background: rgba(45, 106, 79, 0.12);
+  box-shadow: 0 0 0 1px var(--forest-600), 0 4px 14px rgba(45, 106, 79, 0.18);
+  color: var(--forest-700);
+}
+
+body.dark-theme .theme-card-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+body.dark-theme .theme-card-btn:hover {
+  border-color: #34d399;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+body.dark-theme .theme-card-btn.active {
+  border-color: #34d399;
+  background: rgba(52, 211, 153, 0.14);
+  box-shadow: 0 0 0 1px #34d399, 0 4px 14px rgba(52, 211, 153, 0.2);
+  color: #86efac;
+}
+
+.theme-card-icon {
+  font-size: 1.85rem;
+  line-height: 1;
+}
+
+.theme-card-label {
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+
+.theme-card-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: var(--forest-700);
+  color: #ffffff;
+  padding: 3px 8px;
+  border-radius: 12px;
+  margin-top: 4px;
+}
+
+body.dark-theme .theme-card-badge {
+  background: #34d399;
+  color: #064e3b;
+}
+
+/* =========================================================
+   SETTINGS MODAL: GENERAL, THEMES, ABOUT SECTIONS
+   ========================================================= */
+.settings-modal-card {
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.settings-content-scroll {
+  overflow-y: auto;
+  padding-right: 4px;
+  max-height: calc(88vh - 90px);
+}
+
+.settings-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.settings-section-heading {
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.9px;
+  color: var(--forest-600);
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+body.dark-theme .settings-section-heading {
+  color: #34d399;
+}
+
+.settings-list-card {
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  gap: 12px;
+  transition: background var(--transition-fast);
+}
+
+.settings-item-row:last-child {
+  border-bottom: none;
+}
+
+.settings-item-row:hover {
+  background: var(--bg-surface-subtle);
+}
+
+.settings-item-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1;
+}
+
+.settings-item-icon {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border-radius: 10px;
+  background: rgba(45, 106, 79, 0.1);
+  color: var(--forest-700);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+body.dark-theme .settings-item-icon {
+  background: rgba(52, 211, 153, 0.12);
+  color: #86efac;
+}
+
+.settings-item-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.settings-item-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.settings-item-value {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-bright);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 1px;
+}
+
+.settings-item-action-btn {
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--forest-700);
+  background: rgba(45, 106, 79, 0.08);
+  border: 1px solid var(--forest-400);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.settings-item-action-btn:hover {
+  background: var(--forest-700);
+  color: #ffffff;
+}
+
+body.dark-theme .settings-item-action-btn {
+  color: #86efac;
+  background: rgba(52, 211, 153, 0.12);
+  border-color: rgba(52, 211, 153, 0.35);
+}
+
+body.dark-theme .settings-item-action-btn:hover {
+  background: #34d399;
+  color: #064e3b;
+}
+
+/* About Card inside Settings */
+.settings-about-card {
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.settings-about-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.settings-about-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text-bright);
+  line-height: 1.2;
+}
+
+.settings-about-subtitle {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--forest-600);
+  margin-top: 2px;
+}
+
+body.dark-theme .settings-about-subtitle {
+  color: #34d399;
+}
+
+.settings-about-version-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--bg-surface-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  font-size: 0.85rem;
+}
+
+.settings-version-tag {
+  font-size: 0.76rem;
+  font-weight: 700;
+  background: var(--forest-700);
+  color: #ffffff;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+body.dark-theme .settings-version-tag {
+  background: #34d399;
+  color: #064e3b;
+}
+
+.settings-about-desc {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.settings-about-copyright {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 8px;
+  text-align: center;
+}
+
+.drawer-header-btn svg {
+  display: block;
+  stroke: currentColor;
+}
+
+.mobile-drawer-links {
+  padding: 14px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.mobile-drawer-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  color: var(--text-main);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.92rem;
+  transition: all var(--transition-fast);
+  cursor: pointer;
+  min-height: 44px;
+}
+
+.mobile-drawer-link:hover {
+  background: var(--bg-surface-elevated);
+  color: var(--forest-700);
+}
+
+body.dark-theme .mobile-drawer-link:hover {
+  color: var(--forest-300);
+}
+
+.mobile-drawer-link.active {
+  background: var(--forest-600);
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(45, 106, 79, 0.35);
+}
+
+body.dark-theme .mobile-drawer-link.active {
+  background: var(--forest-500);
+  color: #ffffff !important;
+}
+
+.mobile-drawer-footer {
+  padding: 14px 16px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.drawer-user-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg-surface-subtle);
+  border-radius: 12px;
+  border: 1px solid var(--border-subtle);
+}
+
+/* ---------------------------------------------------------
+   3. DESKTOP & LAPTOP SCREENS (769px and above)
+   --------------------------------------------------------- */
+@media (min-width: 1024px) {
+  .btn-hamburger {
+    display: none !important;
+  }
+
+  .mobile-nav-backdrop,
+  .mobile-nav-drawer,
+  .mobile-bottom-nav {
+    display: none !important;
+  }
+
+  .desktop-nav {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+
+  .app-floating-container {
+    width: 95%;
+    max-width: 1420px;
+    margin: 20px auto 40px auto;
+  }
+
+  .app-layout {
+    padding: 22px 28px 60px 28px;
+    gap: 24px;
+  }
+
+  .main-content {
+    padding-bottom: 40px;
+  }
+
+  .floating-chat-trigger {
+    bottom: 30px;
+    right: 30px;
+  }
+
+  .floating-voice-trigger {
+    bottom: 104px;
+    right: 30px;
+  }
+
+  .zones-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  .disease-container {
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+}
+
+/* ---------------------------------------------------------
+   4. LARGE DESKTOP SCREENS (1441px+)
+   --------------------------------------------------------- */
+@media (min-width: 1441px) {
+  .app-floating-container {
+    max-width: 1560px;
+    margin: 28px auto 48px auto;
+  }
+
+  .desktop-nav {
+    width: 250px;
+  }
+
+  .telemetry-grid {
+    gap: 20px;
+  }
+
+  .daily-summary-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ---------------------------------------------------------
+   5. LAPTOP MEDIUM BREAKPOINT (769px to 1023px)
+   --------------------------------------------------------- */
+@media (min-width: 769px) and (max-width: 1023px) {
+  .btn-hamburger {
+    display: inline-flex;
+  }
+
+  .desktop-nav {
+    display: none;
+  }
+
+  .mobile-bottom-nav {
+    display: flex;
+  }
+
+  .app-floating-container {
+    width: 96%;
+    margin: 12px auto 28px auto;
+    border-radius: 24px;
+  }
+
+  .app-layout {
+    padding: 16px 18px 90px 18px;
+    gap: 18px;
+  }
+
+  .brand-text h1 {
+    font-size: 1.25rem;
+  }
+
+  .telemetry-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+  }
+
+  .daily-summary-grid {
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 12px;
+  }
+
+  .zones-grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+  }
+
+  .disease-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .floating-chat-trigger {
+    bottom: 76px;
+    right: 20px;
+  }
+
+  .floating-voice-trigger {
+    bottom: 138px;
+    right: 20px;
+  }
+}
+
+/* ---------------------------------------------------------
+   6. TABLET SCREENS (481px to 768px)
+   --------------------------------------------------------- */
+@media (min-width: 481px) and (max-width: 768px) {
+  .btn-hamburger {
+    display: inline-flex;
+  }
+
+  .desktop-nav {
+    display: none;
+  }
+
+  .mobile-bottom-nav {
+    display: flex;
+  }
+
+  .app-floating-container {
+    width: 96%;
+    margin: 10px auto 24px auto;
+    border-radius: 20px;
+    min-height: calc(100vh - 28px);
+  }
+
+  .app-layout {
+    padding: 14px 14px 85px 14px;
+    gap: 14px;
+  }
+
+  .app-header {
+    padding: 10px 16px;
+  }
+
+  .brand-text h1 {
+    font-size: 1.15rem;
+  }
+
+  .brand-subtitle {
+    display: none;
+  }
+
+  .farmer-greeting-card {
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .telemetry-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .daily-summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .zones-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+  }
+
+  .disease-container {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .modal-card {
+    width: 94%;
+    max-width: 480px;
+    padding: 22px;
+  }
+
+  .floating-chat-trigger {
+    bottom: 76px;
+    right: 16px;
+    width: 50px;
+    height: 50px;
+    font-size: 1.3rem;
+  }
+
+  .floating-voice-trigger {
+    bottom: 136px;
+    right: 16px;
+    width: 50px;
+    height: 50px;
+    font-size: 1.3rem;
+  }
+}
+
+/* ---------------------------------------------------------
+   7. MOBILE PHONES (320px to 480px) - STRICT ERGONOMICS
+   --------------------------------------------------------- */
+@media (max-width: 480px) {
+  .btn-hamburger {
+    display: inline-flex;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    padding: 6px 4px;
+  }
+
+  .desktop-nav {
+    display: none !important;
+  }
+
+  .mobile-bottom-nav {
+    display: flex;
+  }
+
+  .app-floating-container {
+    width: 100%;
+    margin: 0;
+    border-radius: 0;
+    min-height: 100vh;
+    border-left: none;
+    border-right: none;
+  }
+
+  .app-layout {
+    padding: 8px 8px 75px 8px;
+    gap: 8px;
+  }
+
+  .app-header {
+    padding: 8px 10px;
+  }
+
+  .brand-wrapper {
+    gap: 6px;
+  }
+
+  .brand-logo-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 1.15rem;
+  }
+
+  .brand-text h1 {
+    font-size: 0.98rem;
+    letter-spacing: -0.3px;
+  }
+
+  .brand-subtitle {
+    display: none;
+  }
+
+  .header-actions {
+    gap: 6px;
+  }
+
+  .btn-lang-toggle {
+    padding: 5px 10px;
+    min-width: 62px;
+    font-size: 0.76rem;
+  }
+
+  .btn-icon {
+    width: 34px;
+    height: 34px;
+  }
+
+  .user-profile-badge {
+    padding: 2px 6px 2px 2px;
+  }
+
+  #userNameDisplay {
+    display: none;
+  }
+
+  /* Single Screen Home Hero & Telemetry */
+  .farmer-greeting-card {
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    border-radius: 16px;
+  }
+
+  .greeting-eyebrow {
+    font-size: 0.65rem;
+    margin-bottom: 2px;
+  }
+
+  .greeting-title {
+    font-size: 1.12rem;
+    line-height: 1.2;
+  }
+
+  .greeting-status-pill {
+    width: auto;
+    padding: 3px 8px;
+    font-size: 0.68rem;
+  }
+
+  .card {
+    padding: 10px 10px;
+    margin-bottom: 8px;
+    border-radius: 16px;
+  }
+
+  .card-header {
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .card-title {
+    font-size: 0.92rem;
+    gap: 6px;
+  }
+
+  .live-stream-pill {
+    padding: 2px 8px;
+    font-size: 0.62rem;
+  }
+
+  /* The 4 Telemetry Boxes: Appear in single column (stacked vertically) on mobile */
+  .telemetry-grid {
+    grid-template-columns: 1fr !important;
+    gap: 14px;
+    margin-top: 10px;
+  }
+
+  .sensor-card {
+    padding: 16px 18px;
+    border-radius: 18px;
+    min-height: auto;
+    gap: 12px;
+    box-shadow: 0 4px 16px rgba(30, 70, 40, 0.08);
+  }
+
+  .sensor-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .sensor-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    gap: 6px;
+  }
+
+  .sensor-badge {
+    padding: 3px 10px;
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+
+  .sensor-value-large {
+    font-size: 2.2rem;
+    letter-spacing: -0.8px;
+    gap: 6px;
+    line-height: 1.1;
+  }
+
+  .sensor-unit {
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  .sensor-progress-bar {
+    height: 6px;
+  }
+
+  .sensor-meta-row {
+    padding-top: 10px;
+    margin-top: 2px;
+    font-size: 0.78rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .npk-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .npk-column {
+    padding: 8px 6px;
+    border-radius: 12px;
+    gap: 2px;
+  }
+
+  .npk-letter {
+    font-size: 0.8rem;
+    font-weight: 800;
+  }
+
+  .npk-val {
+    font-size: 1.05rem;
+    font-weight: 800;
+  }
+
+  .npk-status-tag {
+    font-size: 0.68rem;
+    padding: 2px 6px;
+  }
+
+  /* Daily Summary Cards */
+  .daily-summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .summary-tile {
+    padding: 10px;
+    border-radius: 14px;
+  }
+
+  .summary-tile-label {
+    font-size: 0.7rem;
+  }
+
+  .summary-tile-value {
+    font-size: 1.05rem;
+  }
+
+  .summary-tile-sub {
+    font-size: 0.68rem;
+  }
+
+  /* Irrigation Hero & Zones */
+  .pump-hero-card {
+    padding: 16px 12px;
+    border-radius: 18px;
+  }
+
+  .btn-pump-toggle {
+    width: 100%;
+    min-height: 48px;
+    justify-content: center;
+    font-size: 0.95rem;
+  }
+
+  .mode-selector {
+    width: 100%;
+    display: flex;
+    gap: 4px;
+  }
+
+  .mode-btn {
+    flex: 1;
+    min-height: 40px;
+    text-align: center;
+    padding: 6px 8px;
+    font-size: 0.75rem;
+  }
+
+  .zones-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  /* Disease Scanner */
+  .disease-container {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .scanner-dropzone {
+    padding: 22px 14px;
+    border-radius: 18px;
+  }
+
+  .scanner-upload-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .btn-scan-trigger {
+    width: 100%;
+    justify-content: center;
+    min-height: 44px;
+  }
+
+  /* History & Filters */
+  .analytics-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    width: 100%;
+  }
+
+  .filter-btn {
+    flex: 1;
+    min-width: 60px;
+    text-align: center;
+    padding: 6px 8px;
+    font-size: 0.74rem;
+  }
+
+  /* Modals & Forms on Mobile */
+  .modal-card {
+    width: 95vw;
+    max-width: 95vw;
+    margin: 8px auto;
+    padding: 18px 14px;
+    border-radius: 18px;
+    max-height: 92vh;
+  }
+
+  .modal-title {
+    font-size: 1.05rem;
+  }
+
+  /* Collapse 2-column forms into 1-column on small screens */
+  .modal-card [style*="grid-template-columns: 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  .form-input {
+    min-height: 44px;
+    font-size: 16px; /* Prevents auto-zoom on mobile safari */
+  }
+
+  .btn-primary {
+    min-height: 44px;
+  }
+
+  /* Voice Modal & Equalizer */
+  .voice-modal-card {
+    padding: 16px;
+    width: 95vw;
+    max-width: 95vw;
+    border-radius: 20px;
+  }
+
+  .voice-metrics-grid {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .voice-controls-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .btn-voice-lang, .btn-voice-stop {
+    width: 100%;
+    justify-content: center;
+    min-height: 44px;
+  }
+
+  /* Chat Drawer on Mobile */
+  .chat-drawer {
+    width: 100%;
+    max-width: 100%;
+    height: 88vh;
+    border-radius: 20px 20px 0 0;
+  }
+
+  /* Floating Buttons */
+  .floating-chat-trigger {
+    bottom: 74px;
+    right: 14px;
+    width: 48px;
+    height: 48px;
+    font-size: 1.25rem;
+  }
+
+  .floating-voice-trigger {
+    bottom: 130px;
+    right: 14px;
+    width: 48px;
+    height: 48px;
+    font-size: 1.25rem;
+  }
+
+  /* Hardware / OLED Mobile */
+  .iot-specs-strip {
+    gap: 6px;
+  }
+
+  .iot-spec-badge {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+  }
+
+  .oled-screen-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .oled-screen-pill {
+    flex: 1;
+    min-width: 130px;
+    font-size: 0.68rem;
+    padding: 4px 8px;
+  }
+
+  .oled-module-wrapper {
+    padding: 12px;
+    max-width: 100%;
+  }
+
+  .oled-screen-matrix {
+    font-size: 0.74rem;
+  }
+
+  .oled-tactile-buttons {
+    gap: 6px;
+  }
+
+  .oled-btn {
+    min-height: 44px;
+    padding: 8px 6px;
+    font-size: 0.75rem;
+  }
+
+  .iot-components-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+/* ---------------------------------------------------------
+   8. EXTRA SMALL SCREENS (<= 360px)
+   --------------------------------------------------------- */
+@media (max-width: 360px) {
+  .brand-text h1 {
+    font-size: 0.88rem;
+  }
+
+  .sensor-name {
+    font-size: 0.68rem;
+  }
+
+  .sensor-value-large {
+    font-size: 1.2rem;
+  }
+
+  .summary-tile-value {
+    font-size: 0.95rem;
+  }
+
+  .header-actions {
+    gap: 4px;
+  }
+
+  .btn-lang-toggle {
+    padding: 4px 6px;
+    min-width: 52px;
+    font-size: 0.72rem;
+  }
+}

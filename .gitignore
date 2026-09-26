@@ -1,0 +1,60 @@
+# Environment & Secrets (DO NOT COMMIT)
+.env
+*.env
+backend/.env
+.env.*
+!.env.example
+
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# SQLite Databases & Local Storage
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+backend/areca_farm.db
+
+# Logs & Temporary Files
+*.log
+logs/
+scratch/
+tmp/
+
+# OS Specific
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE & Editor Settings
+.vscode/
+.idea/
+*.swp
+*.swo
