@@ -1,0 +1,13 @@
+.git
+.env
+backend/.env
+__pycache__
+*.pyc
+*.pyo
+venv
+.venv
+run.bat
+*.log
+.tts_cache
+scratch/
+tmp/

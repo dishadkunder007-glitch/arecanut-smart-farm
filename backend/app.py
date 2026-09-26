@@ -1410,9 +1410,14 @@ async def websocket_endpoint(websocket: WebSocket):
 # ==========================================
 
 # Persistent disk and memory cache for ultra-fast TTS
-TTS_CACHE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".tts_cache")
+if os.environ.get("VERCEL"):
+    import tempfile
+    TTS_CACHE_DIR = os.path.join(tempfile.gettempdir(), ".tts_cache")
+else:
+    TTS_CACHE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".tts_cache")
 os.makedirs(TTS_CACHE_DIR, exist_ok=True)
 _tts_cache = {}
+
 
 # Dedicated HTTP Session with connection pooling to eliminate TCP/SSL handshake latency
 _tts_session = requests.Session()
@@ -1542,9 +1547,14 @@ def stream_tts(
 
 
 # Mount Static Frontend
-FRONTEND_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "frontend")
+BASE_PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+FRONTEND_DIR = os.path.join(BASE_PROJECT_DIR, "docs")
+if not os.path.exists(FRONTEND_DIR):
+    FRONTEND_DIR = os.path.join(BASE_PROJECT_DIR, "frontend")
+
 if os.path.exists(FRONTEND_DIR):
     app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
+
 
 if __name__ == "__main__":
     import uvicorn
